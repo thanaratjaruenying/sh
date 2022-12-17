@@ -1,17 +1,16 @@
 import { Base } from './base.interface';
 
-export enum Role {
-  ADMIN = 'ADMIN',
-  EMPLOYEE = 'EMPLOYEE',
+export enum SystemRole {
+  SH = 'SH',
+  USER = 'USER',
 }
 
 export interface User extends Base {
   active: boolean;
-  companyId: number;
   email: string;
   firstName: string;
   lastName: string;
   phone: string;
-  role: Role;
+  systemRole: SystemRole;
   salary: number;
 }

@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 import { Company } from '../../types';
 import { BaseEntity } from '../base.entity';
-import { UserEntity } from './user.entity';
+import { UserPermissionEntity } from './user-permission.entity';
 
 @Entity({ name: 'companies' })
 export class CompanyEntity extends BaseEntity implements Company {
@@ -42,6 +42,6 @@ export class CompanyEntity extends BaseEntity implements Company {
   @Column()
   subdistrict: string;
 
-  @OneToMany(() => UserEntity, (user) => user.company)
-  users: UserEntity[];
+  @OneToMany(() => UserPermissionEntity, (permission) => permission.user)
+  userPermissions?: ReadonlyArray<UserPermissionEntity>;
 }

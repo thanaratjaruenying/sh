@@ -1,17 +1,14 @@
-import { Entity, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany, OneToOne, JoinColumn } from 'typeorm';
 
-import { CompanyEntity } from './company.entity';
 import { BaseEntity } from '../base.entity';
-import { Role, User } from 'src/types';
+import { SystemRole, User } from 'src/types';
 import { MoneyTransfersEntity } from './money_tranfers.entity';
+import { UserPermissionEntity } from './user-permission.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity implements User {
   @Column()
   active: boolean;
-
-  @Column()
-  companyId: number;
 
   @Column()
   email: string;
@@ -26,14 +23,14 @@ export class UserEntity extends BaseEntity implements User {
   phone: string;
 
   @Column()
-  role: Role;
+  systemRole: SystemRole;
 
   @Column()
   salary: number;
 
-  @ManyToOne(() => CompanyEntity, (company) => company.users)
-  company?: CompanyEntity;
-
   @OneToMany(() => MoneyTransfersEntity, (moneyTransfer) => moneyTransfer.user)
-  moneyTransfers?: MoneyTransfersEntity[];
+  moneyTransfers?: ReadonlyArray<MoneyTransfersEntity>;
+
+  @OneToMany(() => UserPermissionEntity, (permission) => permission.user)
+  userPermissions?: ReadonlyArray<UserPermissionEntity>;
 }

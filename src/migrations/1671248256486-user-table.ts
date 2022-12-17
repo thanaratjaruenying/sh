@@ -1,19 +1,6 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-  TableForeignKey,
-  TableIndex,
-} from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
 
 const table = 'users';
-
-const foreignKey = new TableForeignKey({
-  columnNames: ['company_id'],
-  referencedColumnNames: ['id'],
-  referencedTableName: 'companies',
-  onDelete: 'CASCADE',
-});
 
 export class userTable1671248256486 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -32,11 +19,6 @@ export class userTable1671248256486 implements MigrationInterface {
           {
             name: 'active',
             type: 'boolean',
-            isNullable: false,
-          },
-          {
-            name: 'company_id',
-            type: 'int',
             isNullable: false,
           },
           {
@@ -66,7 +48,7 @@ export class userTable1671248256486 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'role',
+            name: 'system_role',
             type: 'character varying(255)',
             isNullable: false,
           },
@@ -92,21 +74,11 @@ export class userTable1671248256486 implements MigrationInterface {
       }),
     );
 
-    await queryRunner.createForeignKey(table, foreignKey);
-
     await queryRunner.createIndex(
       table,
       new TableIndex({
         name: `IDX_${table}_email`,
         columnNames: ['email'],
-      }),
-    );
-
-    await queryRunner.createIndex(
-      table,
-      new TableIndex({
-        name: `IDX_${table}_email_company_id`,
-        columnNames: ['email', 'company_id'],
       }),
     );
 
@@ -120,9 +92,7 @@ export class userTable1671248256486 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey(table, foreignKey);
     await queryRunner.dropIndex(table, `IDX_${table}_email`);
-    await queryRunner.dropIndex(table, `IDX_${table}_email_company_id`);
     await queryRunner.dropIndex(table, `IDX_${table}_name`);
     await queryRunner.dropTable(table);
   }

@@ -3,8 +3,6 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
   PrimaryColumn,
   Unique,
 } from 'typeorm';

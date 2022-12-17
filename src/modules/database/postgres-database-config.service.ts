@@ -12,7 +12,7 @@ export class PostgresDatabaseConfigService implements TypeOrmOptionsFactory {
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
       migrations: ['migrations/*.{ts,js}'],
-      entities: ['**/models/postgres/*.entity.{ts,js}'],
+      entities: ['models/postgres/*.entity.{ts,js}'],
       type: DATABASE.POSTGRES,
       url: this.configService.env.POSTGRES_URL,
       migrationsTableName: 'migrations',

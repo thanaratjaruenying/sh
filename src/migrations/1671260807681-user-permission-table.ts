@@ -33,6 +33,7 @@ export class userPermissionTable1671260807681 implements MigrationInterface {
             name: 'active',
             type: 'boolean',
             isNullable: false,
+            default: true,
           },
           {
             name: 'user_id',

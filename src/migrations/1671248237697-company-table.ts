@@ -20,6 +20,7 @@ export class companyTable1671248237697 implements MigrationInterface {
             name: 'active',
             type: 'boolean',
             isNullable: false,
+            default: true,
           },
           {
             name: 'address1',

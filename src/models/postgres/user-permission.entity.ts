@@ -7,7 +7,7 @@ import {
   Unique,
 } from 'typeorm';
 
-import { Role, UserPermission } from 'src/types';
+import { Role, UserPermission } from 'src/interfaces';
 import { BaseEntity } from '../base.entity';
 import { UserEntity } from './user.entity';
 import { CompanyEntity } from './company.entity';

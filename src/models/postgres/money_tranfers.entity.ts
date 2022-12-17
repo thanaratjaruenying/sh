@@ -1,8 +1,6 @@
-import { MoneyTransfers, MoneyTransferStaus } from 'src/types';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { MoneyTransfers, MoneyTransferStaus } from 'src/interfaces';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '../base.entity';
-import { CompanyEntity } from './company.entity';
-import { UserEntity } from './user.entity';
 
 @Entity({ name: 'money_transfers' })
 export class MoneyTransfersEntity extends BaseEntity implements MoneyTransfers {
@@ -26,10 +24,4 @@ export class MoneyTransfersEntity extends BaseEntity implements MoneyTransfers {
 
   @Column()
   userId: number;
-
-  @ManyToOne(() => CompanyEntity)
-  company: CompanyEntity;
-
-  @ManyToOne(() => UserEntity, (user) => user.moneyTransfers)
-  user: UserEntity;
 }

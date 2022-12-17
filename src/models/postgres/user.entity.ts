@@ -1,8 +1,7 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 
 import { BaseEntity } from '../base.entity';
-import { SystemRole, User } from 'src/types';
-import { MoneyTransfersEntity } from './money_tranfers.entity';
+import { SystemRole, User } from 'src/interfaces';
 import { UserPermissionEntity } from './user-permission.entity';
 
 @Entity({ name: 'users' })
@@ -26,10 +25,10 @@ export class UserEntity extends BaseEntity implements User {
   systemRole: SystemRole;
 
   @Column()
-  salary: number;
+  hash: string;
 
-  @OneToMany(() => MoneyTransfersEntity, (moneyTransfer) => moneyTransfer.user)
-  moneyTransfers?: ReadonlyArray<MoneyTransfersEntity>;
+  @Column()
+  salt: string;
 
   @OneToMany(() => UserPermissionEntity, (permission) => permission.user)
   userPermissions?: ReadonlyArray<UserPermissionEntity>;

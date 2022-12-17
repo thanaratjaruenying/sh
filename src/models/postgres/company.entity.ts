@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
-import { Company } from '../../types';
+import { Company } from '../../interfaces';
 import { BaseEntity } from '../base.entity';
 import { UserPermissionEntity } from './user-permission.entity';
 

@@ -1,5 +1,10 @@
 import { Provider } from '@nestjs/common';
-import { join } from 'path';
+import {
+  CompanyEntity,
+  MoneyTransfersEntity,
+  UserEntity,
+  UserPermissionEntity,
+} from 'src/models';
 import { DataSource } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
@@ -13,8 +18,12 @@ export const postgresDatabaseProvider: ReadonlyArray<Provider> = [
       const dataSource = new DataSource({
         type: DATABASE.POSTGRES,
         url: configService.env.POSTGRES_URL,
-        migrations: ['**/migrations/*.{ts,js}'],
-        entities: ['**/models/postgres/*.entity.{ts,js}'],
+        entities: [
+          CompanyEntity,
+          MoneyTransfersEntity,
+          UserEntity,
+          UserPermissionEntity,
+        ],
         synchronize: false,
         ssl: false,
         namingStrategy: new SnakeNamingStrategy(),

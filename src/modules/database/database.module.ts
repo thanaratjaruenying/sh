@@ -1,16 +1,9 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
-// import { postgresDatabaseProvider } from './postgres-database.provider';
-import { PostgresDatabaseConfigService } from './postgres-database-config.service';
+import { postgresDatabaseProvider } from './postgres-database.provider';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRootAsync({
-      useClass: PostgresDatabaseConfigService,
-    }),
-  ],
-  exports: [],
-  providers: [],
+  exports: [...postgresDatabaseProvider],
+  providers: [...postgresDatabaseProvider],
 })
 export class DatabaseModule {}

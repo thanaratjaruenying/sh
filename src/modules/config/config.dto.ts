@@ -17,4 +17,11 @@ export class EnvironmentConfigDto {
   @Expose()
   @IsString()
   readonly POSTGRES_URL: string;
+
+  @Expose()
+  @IsString()
+  @Transform((params: TransformFnParams) =>
+    params.value ? params.value : 'secret',
+  )
+  readonly SECRET_KEY: string;
 }

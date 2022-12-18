@@ -6,7 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as crypto from 'crypto';
 
-import { User } from 'src/interfaces';
+import { SystemRole, User } from 'src/interfaces';
 import { ConfigService } from '../config/config.service';
 import { UserRepository } from '../repositories';
 import { SigninInterface, SignupInterface } from './interfaces';
@@ -37,18 +37,28 @@ export class AuthService {
     return computedHashedPassword === hashedPassword;
   }
 
+  // Only Salary Hero email can have SH role
+  isShEmail(email: string): boolean {
+    return this.config.env.SH_EMAILS.includes(email);
+  }
+
   async signup(data: SignupInterface): Promise<User> {
-    const { password } = data;
+    const { password, email } = data;
 
     // Generate a random salt
     const salt = crypto.randomBytes(32).toString('hex');
 
     // Hash the password and the salt together
     const hash = this.gethash();
-    hash.update(password + salt + this.config.env.SECRET_KEY);
+    hash.update(password + salt);
     const hashedPassword = hash.digest('hex');
 
-    return this.usersRepo.create({ ...data, salt, hash: hashedPassword });
+    return this.usersRepo.create({
+      ...data,
+      salt,
+      hash: hashedPassword,
+      systemRole: this.isShEmail(email) ? SystemRole.SH : SystemRole.USER,
+    });
   }
 
   async signin(data: SigninInterface): Promise<string> {
@@ -64,11 +74,11 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const now = Math.floor(Date.now() / 1000);
+    const exp = Math.floor(Date.now() / 1000) + 86400;
     const payload = {
+      exp,
       email: user.email,
       systemRole: user.systemRole,
-      exp: now + 86400,
     };
     const jwt = this.jwtService.sign(payload, {
       secret: this.config.env.SECRET_KEY,

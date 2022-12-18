@@ -1,5 +1,5 @@
 import { Expose, Transform, TransformFnParams } from 'class-transformer';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class EnvironmentConfigDto {
   @Expose()
@@ -24,4 +24,9 @@ export class EnvironmentConfigDto {
     params.value ? params.value : 'secret',
   )
   readonly SECRET_KEY: string;
+
+  @Expose()
+  @IsArray()
+  @Transform(({ value }) => (value ? value.split(',') : []))
+  readonly SH_EMAILS: ReadonlyArray<string>;
 }

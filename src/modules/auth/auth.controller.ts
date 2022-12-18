@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpStatus, Post, Res } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 
 import { SignupDto } from './dto';
@@ -22,7 +22,7 @@ export class AuthController {
     const result = await this.userService.signin(signin);
 
     // Store the JWT in a cookie
-    res.header('Set-Cookie', `token=${result}; HttpOnly`);
+    res.header('Set-Cookie', `jwt=${result}; HttpOnly; Path=/`);
 
     res.status(HttpStatus.OK).send(result);
   }

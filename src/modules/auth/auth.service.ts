@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as crypto from 'crypto';
 
@@ -47,7 +51,7 @@ export class AuthService {
     return this.usersRepo.create({ ...data, salt, hash: hashedPassword });
   }
 
-  async signin(data: SigninInterface): Promise<any> {
+  async signin(data: SigninInterface): Promise<string> {
     const { email, password } = data;
 
     const user = await this.usersRepo.getByEmail(email);
@@ -57,7 +61,7 @@ export class AuthService {
 
     const result = this.verifyPassword(password, user.hash, user.salt);
     if (!result) {
-      throw new BadRequestException('wrong email or password');
+      throw new UnauthorizedException();
     }
 
     const now = Math.floor(Date.now() / 1000);
@@ -66,10 +70,10 @@ export class AuthService {
       systemRole: user.systemRole,
       exp: now + 86400,
     };
-    const token = this.jwtService.sign(payload, {
+    const jwt = this.jwtService.sign(payload, {
       secret: this.config.env.SECRET_KEY,
     });
 
-    return token;
+    return jwt;
   }
 }

@@ -17,6 +17,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     adapter,
+    { cors: true },
   );
 
   app.useGlobalPipes(new ValidationPipe());

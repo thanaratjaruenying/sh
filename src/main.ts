@@ -10,9 +10,7 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const adapter = new FastifyAdapter({ logger: true });
-  adapter.register(fastifyCookie, {
-    signCookie: process.env.secret,
-  });
+  adapter.register(fastifyCookie);
 
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,

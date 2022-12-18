@@ -1,7 +1,7 @@
 import { Base } from './base.interface';
 
 export interface Company extends Base {
-  active: boolean;
+  active?: boolean;
   address1: string;
   address2?: string;
   district: string;

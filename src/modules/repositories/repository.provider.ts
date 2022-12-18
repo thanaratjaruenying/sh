@@ -1,8 +1,20 @@
 import { Provider } from '@nestjs/common';
 import { DataSource, EntityTarget } from 'typeorm';
 
-import { POSTGRES_CONNECTION, USER_REPOSITORY_NAME } from '../../constants';
-import { UserEntity, BaseEntity } from '../../models';
+import {
+  COMPANY_REPOSITORY_NAME,
+  MONEY_TRANFERS_REPOSITORY_NAME,
+  POSTGRES_CONNECTION,
+  USER_PERMISSION_REPOSITORY_NAME,
+  USER_REPOSITORY_NAME,
+} from '../../constants';
+import {
+  UserEntity,
+  BaseEntity,
+  CompanyEntity,
+  UserPermissionEntity,
+  MoneyTransfersEntity,
+} from '../../models';
 
 interface ModelInjection<T> {
   readonly repositoryName: string;
@@ -29,6 +41,18 @@ const POSTGRES_MODELS: ReadonlyArray<ModelInjection<PostgresModel>> = [
   {
     entity: UserEntity,
     repositoryName: USER_REPOSITORY_NAME,
+  },
+  {
+    entity: CompanyEntity,
+    repositoryName: COMPANY_REPOSITORY_NAME,
+  },
+  {
+    entity: UserPermissionEntity,
+    repositoryName: USER_PERMISSION_REPOSITORY_NAME,
+  },
+  {
+    entity: MoneyTransfersEntity,
+    repositoryName: MONEY_TRANFERS_REPOSITORY_NAME,
   },
 ];
 

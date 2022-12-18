@@ -3,11 +3,9 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
 
-import { ConfigService } from '../config/config.service';
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly config: ConfigService) {
+  constructor() {
     super({
       jwtFromRequest: (req: FastifyRequest) => {
         let token = null;
@@ -23,6 +21,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    return { email: payload.email, systemRole: payload.systemRole };
+    return { email: payload.email, roles: [payload.systemRole] };
   }
 }

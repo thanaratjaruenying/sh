@@ -1,34 +1,31 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
   HttpStatus,
-  Patch,
-  Post,
+  Query,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { GetUserDto } from './dto';
 import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Patch()
+  @UseGuards(JwtAuthGuard)
+  @Get()
   async getUser(
-    @Body() signin: any,
+    @Query() query: GetUserDto,
     @Res() res: FastifyReply<any>,
   ): Promise<any> {
-    res.status(HttpStatus.OK).send();
-  }
+    const { email } = query;
 
-  @Delete()
-  async deleteUser(
-    @Body() signin: any,
-    @Res() res: FastifyReply<any>,
-  ): Promise<void> {
-    res.status(HttpStatus.OK).send();
+    const result = await this.userService.getUserByEmail(email);
+
+    res.status(HttpStatus.OK).send(result);
   }
 }

@@ -30,7 +30,7 @@ export class AuthService {
   ) {
     // Hash the password, the salt, and the secret key together
     const hash = this.gethash();
-    hash.update(password + salt + this.config.env.SECRET_KEY);
+    hash.update(password + salt);
     const computedHashedPassword = hash.digest('hex');
 
     // Compare the computed hashed password to the stored hashed password

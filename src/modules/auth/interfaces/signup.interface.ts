@@ -8,3 +8,11 @@ export interface SignupInterface {
   phone: string;
   systemRole: SystemRole;
 }
+
+export interface SignupWithLinkInterface {
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  phone: string;
+}

@@ -9,7 +9,11 @@ import * as crypto from 'crypto';
 import { SystemRole, User } from 'src/interfaces';
 import { ConfigService } from '../config/config.service';
 import { UserRepository } from '../repositories';
-import { SigninInterface, SignupInterface } from './interfaces';
+import {
+  SigninInterface,
+  SignupInterface,
+  SignupWithLinkInterface,
+} from './interfaces';
 
 @Injectable()
 export class AuthService {
@@ -38,13 +42,11 @@ export class AuthService {
   }
 
   // Only Salary Hero email can have SH role
-  isShEmail(email: string): boolean {
+  private isShEmail(email: string): boolean {
     return this.config.env.SH_EMAILS.includes(email);
   }
 
-  async signup(data: SignupInterface): Promise<User> {
-    const { password, email } = data;
-
+  private getHashSalt(password: string): { hash: string; salt: string } {
     // Generate a random salt
     const salt = crypto.randomBytes(32).toString('hex');
 
@@ -52,11 +54,18 @@ export class AuthService {
     const hash = this.gethash();
     hash.update(password + salt);
     const hashedPassword = hash.digest('hex');
+    return { salt, hash: hashedPassword };
+  }
+
+  async signup(data: SignupInterface): Promise<User> {
+    const { password, email } = data;
+
+    const { hash, salt } = this.getHashSalt(password);
 
     return this.usersRepo.create({
       ...data,
       salt,
-      hash: hashedPassword,
+      hash,
       systemRole: this.isShEmail(email) ? SystemRole.SH : SystemRole.USER,
     });
   }
@@ -85,5 +94,25 @@ export class AuthService {
     });
 
     return jwt;
+  }
+
+  async signupWithLink(data: SignupWithLinkInterface): Promise<User> {
+    const { password, email, firstName, lastName, phone } = data;
+
+    const user = await this.usersRepo.getByEmail(email);
+    if (!user) {
+      throw new BadRequestException('email not found');
+    }
+
+    const { hash, salt } = this.getHashSalt(password);
+
+    return this.usersRepo.updateUser({
+      ...user,
+      firstName,
+      lastName,
+      phone,
+      hash,
+      salt,
+    });
   }
 }

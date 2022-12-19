@@ -58,14 +58,6 @@ export class userTable1671248256486 implements MigrationInterface {
             type: 'character varying(255)',
             isNullable: false,
           },
-          // {
-          //   name: 'salary',
-          //   type: 'numeric',
-          //   precision: 12,
-          //   scale: 2,
-          //   isNullable: false,
-          //   default: 0,
-          // },
           {
             name: 'created_at',
             type: 'timestamptz',

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository, UpdateResult } from 'typeorm';
 
 import { User } from 'src/interfaces';
 import { USER_REPOSITORY_NAME } from '../../constants';
@@ -9,22 +9,41 @@ import { UserEntity } from '../../models';
 export class UserRepository {
   constructor(
     @Inject(USER_REPOSITORY_NAME)
-    private readonly userRepo: Repository<UserEntity>,
+    private readonly userDb: Repository<UserEntity>,
   ) {}
 
   async create(user: Partial<User>): Promise<User> {
-    return this.userRepo.save(user);
+    return this.userDb.save(user);
   }
 
   async getByEmail(email: string): Promise<User> {
-    return this.userRepo.findOneBy({
+    return this.userDb.findOneBy({
       email,
     });
   }
 
-  async getById(email: string): Promise<User> {
-    return this.userRepo.findOneBy({
-      email,
+  async getById(id: number): Promise<User> {
+    return this.userDb.findOneBy({
+      id,
     });
+  }
+
+  async updateUser(updates: Partial<User>) {
+    return this.userDb.save({
+      ...updates,
+    });
+  }
+
+  async deleteUser(userId: number) {
+    return this.userDb.update({ id: userId }, { active: false });
+  }
+
+  async deleteUserWithTransaction(
+    userId: number,
+    entityManager: EntityManager,
+  ): Promise<UpdateResult> {
+    return entityManager
+      .getRepository(UserEntity)
+      .update({ id: userId }, { active: false });
   }
 }

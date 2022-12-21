@@ -2,6 +2,7 @@ import { Provider } from '@nestjs/common';
 import { DataSource, EntityTarget } from 'typeorm';
 
 import {
+  ACCOUNT_REPOSITORY_NAME,
   COMPANY_REPOSITORY_NAME,
   MONEY_TRANFERS_REPOSITORY_NAME,
   POSTGRES_CONNECTION,
@@ -53,6 +54,10 @@ const POSTGRES_MODELS: ReadonlyArray<ModelInjection<PostgresModel>> = [
   {
     entity: MoneyTransfersEntity,
     repositoryName: MONEY_TRANFERS_REPOSITORY_NAME,
+  },
+  {
+    entity: CompanyEntity,
+    repositoryName: ACCOUNT_REPOSITORY_NAME,
   },
 ];
 

@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -102,6 +103,12 @@ export class AuthService {
     const user = await this.usersRepo.getByEmail(email);
     if (!user) {
       throw new BadRequestException('email not found');
+    }
+    // Employee will has their email in the DB without password
+    // They have to sign up with link(email)
+    // should be better if using Redis key with expire
+    if (!user.salt || !user.hash) {
+      throw new ForbiddenException();
     }
 
     const { hash, salt } = this.getHashSalt(password);

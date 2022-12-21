@@ -11,7 +11,6 @@ export interface User extends Base {
   firstName: string;
   hash?: string;
   lastName: string;
-  password?: string;
   phone: string;
   salt?: string;
   systemRole: SystemRole;

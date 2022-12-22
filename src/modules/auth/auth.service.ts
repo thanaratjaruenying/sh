@@ -74,6 +74,10 @@ export class AuthService {
 
   async signup(data: SignupInterface): Promise<string> {
     const { password, email } = data;
+    const found = await this.usersRepo.getByEmail(email);
+    if (found) {
+      throw new BadRequestException('email is already signed up');
+    }
 
     const { hash, salt } = this.getHashSalt(password);
 

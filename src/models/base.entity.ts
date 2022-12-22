@@ -14,3 +14,11 @@ export class BaseEntity {
   @UpdateDateColumn()
   updatedAt!: Date;
 }
+
+export class BaseEntityWithoutId {
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
+}

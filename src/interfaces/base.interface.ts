@@ -3,3 +3,8 @@ export interface Base {
   id: number;
   updatedAt: Date;
 }
+
+export interface BaseWithoutId {
+  createdAt: Date;
+  updatedAt: Date;
+}

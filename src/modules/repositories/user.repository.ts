@@ -16,6 +16,13 @@ export class UserRepository {
     return this.userDb.save(user);
   }
 
+  async createWithTransaction(
+    user: Partial<User>,
+    entityManager: EntityManager,
+  ): Promise<User> {
+    return entityManager.getRepository(UserEntity).save(user);
+  }
+
   async getByEmail(email: string): Promise<User> {
     return this.userDb.findOneBy({
       email,

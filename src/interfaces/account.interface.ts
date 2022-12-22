@@ -1,6 +1,6 @@
-import { Base } from './base.interface';
+import { BaseWithoutId } from './base.interface';
 
-export interface Account extends Base {
+export interface Account extends BaseWithoutId {
   companyId: number;
   salary: number;
   userId: number;

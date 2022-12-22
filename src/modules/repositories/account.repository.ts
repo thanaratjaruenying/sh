@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 
 import { Account } from 'src/interfaces';
 import { ACCOUNT_REPOSITORY_NAME } from '../../constants';
@@ -14,6 +14,13 @@ export class AccountRepository {
 
   async create(account: Partial<Account>): Promise<Account> {
     return this.accountRepo.save(account);
+  }
+
+  async createWithTransaction(
+    account: Partial<Account>,
+    entityManager: EntityManager,
+  ): Promise<Account> {
+    return entityManager.getRepository(AccountEntity).save(account);
   }
 
   async getById(userId: number, companyId: number): Promise<Account> {

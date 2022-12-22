@@ -25,6 +25,9 @@
   },
   "dependencies": {
     "@fastify/cookie": "^8.3.0",
+    "@fastify/helmet": "^10.1.0",
+    "@fastify/multipart": "^7.3.0",
+    "@fastify/static": "^6.6.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^9.0.0",
@@ -35,6 +38,7 @@
     "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "csv-parser": "^3.0.0",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "pg": "^8.8.0",

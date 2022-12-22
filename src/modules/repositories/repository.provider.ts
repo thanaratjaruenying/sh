@@ -15,6 +15,7 @@ import {
   CompanyEntity,
   UserPermissionEntity,
   MoneyTransfersEntity,
+  AccountEntity,
 } from '../../models';
 
 interface ModelInjection<T> {
@@ -56,7 +57,7 @@ const POSTGRES_MODELS: ReadonlyArray<ModelInjection<PostgresModel>> = [
     repositoryName: MONEY_TRANFERS_REPOSITORY_NAME,
   },
   {
-    entity: CompanyEntity,
+    entity: AccountEntity,
     repositoryName: ACCOUNT_REPOSITORY_NAME,
   },
 ];

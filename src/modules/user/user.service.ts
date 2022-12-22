@@ -1,4 +1,6 @@
+import { BusboyFileStream } from '@fastify/busboy';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import * as csvParser from 'csv-parser';
 
 import { SystemRole, User, UserPermission } from 'src/interfaces';
 import { ConfigService } from '../config/config.service';
@@ -8,7 +10,11 @@ import {
   UserPermissionRepository,
   UserRepository,
 } from '../repositories';
-import { CreateEmployeeInterface, UpdateEmployeeInterface } from './interfaces';
+import {
+  CreateEmployeeInterface,
+  ImportEmployeeInterface,
+  UpdateEmployeeInterface,
+} from './interfaces';
 
 @Injectable()
 export class UserService {
@@ -49,20 +55,82 @@ export class UserService {
 
   async createEmployee(body: CreateEmployeeInterface): Promise<User> {
     const { email, firstName, lastName, phone, companyId, salary } = body;
-    const user = await this.usersRepo.create({
-      email,
-      firstName,
-      lastName,
-      phone,
-      systemRole: SystemRole.USER,
-    });
 
-    await Promise.all([
-      this.userPermissionRepo.createEmployeePermission(user.id, companyId),
-      this.accountRepo.create({ userId: user.id, companyId, salary }),
-    ]);
+    const connection = await getDatasource(this.config.env.POSTGRES_URL);
+    const queryRunner = connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    let user: User;
+    try {
+      user = await this.usersRepo.createWithTransaction(
+        {
+          email,
+          firstName,
+          lastName,
+          phone,
+          systemRole: SystemRole.USER,
+        },
+        queryRunner.manager,
+      );
+      await Promise.all([
+        this.userPermissionRepo.createEmployeePermissionWithTransaction(
+          user.id,
+          companyId,
+          queryRunner.manager,
+        ),
+        this.accountRepo.createWithTransaction(
+          { userId: user.id, companyId, salary },
+          queryRunner.manager,
+        ),
+      ]);
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      return Promise.reject(error);
+    } finally {
+      await queryRunner.release();
+    }
 
     return user;
+  }
+
+  async importEmployees(
+    companyId: number,
+    fileStream: BusboyFileStream,
+  ): Promise<any> {
+    const employees = [];
+    return new Promise((resolve, reject) => {
+      fileStream
+        .pipe(csvParser())
+        .on('data', async (row: ImportEmployeeInterface) => {
+          employees.push(
+            this.createEmployee({
+              ...row,
+              companyId,
+              salary: Number(row.salary),
+            }),
+          );
+        })
+        .on('end', async () => {
+          const users = [];
+          const results = await Promise.allSettled(employees);
+          for (const emp of results) {
+            if (emp.status === 'fulfilled') {
+              users.push(emp.value);
+            } else {
+              users.push(emp.reason.detail);
+            }
+          }
+
+          resolve(users);
+        })
+        .on('error', (err: Error) => {
+          reject(err);
+        });
+    });
   }
 
   async updateEmployee(
@@ -80,19 +148,28 @@ export class UserService {
 
   async deleteEmployee(employeeId: number, companyId: number): Promise<void> {
     const connection = await getDatasource(this.config.env.POSTGRES_URL);
+    const queryRunner = connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-    await connection.manager.transaction(async (transactionalEntityManager) => {
+    try {
       await Promise.all([
         this.userPermissionRepo.deletePermissionWithTransaction(
           employeeId,
           companyId,
-          transactionalEntityManager,
+          queryRunner.manager,
         ),
         this.usersRepo.deleteUserWithTransaction(
           employeeId,
-          transactionalEntityManager,
+          queryRunner.manager,
         ),
       ]);
-    });
+      // commit transaction now:
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

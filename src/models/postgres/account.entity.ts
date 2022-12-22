@@ -8,13 +8,13 @@ import {
 } from 'typeorm';
 
 import { Account } from 'src/interfaces';
-import { BaseEntity } from '../base.entity';
+import { BaseEntityWithoutId } from '../base.entity';
 import { UserEntity } from './user.entity';
 import { CompanyEntity } from './company.entity';
 
 @Entity({ name: 'accounts' })
 @Unique(['userId', 'companyId'])
-export class AccountEntity extends BaseEntity implements Account {
+export class AccountEntity extends BaseEntityWithoutId implements Account {
   @PrimaryColumn({ name: 'user_id' })
   userId: number;
 

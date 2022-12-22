@@ -34,8 +34,23 @@ export class UserPermissionRepository {
     });
   }
 
-  async getByUserId(id: number): Promise<ReadonlyArray<UserPermission>> {
-    return this.userPermissionDb.findBy({ id });
+  async createEmployeePermissionWithTransaction(
+    userId: number,
+    companyId: number,
+    entityManager: EntityManager,
+  ): Promise<UserPermission> {
+    return entityManager.getRepository(UserPermissionEntity).save({
+      userId,
+      companyId,
+      role: Role.EMPLOYEE,
+    });
+  }
+
+  async getByUserId(
+    userId: number,
+    companyId: number,
+  ): Promise<ReadonlyArray<UserPermission>> {
+    return this.userPermissionDb.findBy({ userId, companyId });
   }
 
   async deletePermission(

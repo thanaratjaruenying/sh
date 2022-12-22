@@ -2,11 +2,17 @@ import { BusboyFileStream } from '@fastify/busboy';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as csvParser from 'csv-parser';
 
-import { SystemRole, User, UserPermission } from 'src/interfaces';
+import {
+  MoneyTransferStaus,
+  SystemRole,
+  User,
+  UserPermission,
+} from 'src/interfaces';
 import { ConfigService } from '../config/config.service';
 import { getDatasource } from '../database/postgres-database.provider';
 import {
   AccountRepository,
+  MoneyTransferRepository,
   UserPermissionRepository,
   UserRepository,
 } from '../repositories';
@@ -23,6 +29,7 @@ export class UserService {
     private readonly userPermissionRepo: UserPermissionRepository,
     private readonly accountRepo: AccountRepository,
     private readonly config: ConfigService,
+    private readonly moneyTransferRepo: MoneyTransferRepository,
   ) {}
 
   async getUserByEmail(email: string): Promise<User> {
@@ -171,5 +178,52 @@ export class UserService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async requestMoneyTransfer(
+    employeeEmail: string,
+    companyId: number,
+    amount: number,
+  ) {
+    const user = await this.usersRepo.getByEmail(employeeEmail);
+    if (!user) {
+      throw new BadRequestException('user not found');
+    }
+
+    const [transactions, account] = await Promise.all([
+      this.moneyTransferRepo.getMoneyTransfersOnCurrentMonth(
+        user.id,
+        companyId,
+      ),
+      this.accountRepo.getById(user.id, companyId),
+    ]);
+
+    const withdraw = transactions.reduce(
+      (prev, curr) => prev + curr.requestedAmount,
+      0,
+    );
+
+    const fiftyPercent = account.salary * 0.5;
+    const requestAmount = withdraw + amount;
+    if (requestAmount > fiftyPercent) {
+      throw new BadRequestException('cannot withdraw more than 50% of salary');
+    }
+
+    await this.moneyTransferRepo.addMoneyTransfer({
+      userId: user.id,
+      companyId,
+      requestedAmount: amount,
+      status: MoneyTransferStaus.PENDING,
+    });
+  }
+
+  async updateMoneyTransfer(
+    moneyTransferId: number,
+    status: MoneyTransferStaus,
+  ): Promise<void> {
+    await this.moneyTransferRepo.updateMoneyTransferStatus(
+      moneyTransferId,
+      status,
+    );
   }
 }

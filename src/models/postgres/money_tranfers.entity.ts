@@ -1,5 +1,6 @@
-import { MoneyTransfers, MoneyTransferStaus } from 'src/interfaces';
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+import { MoneyTransfers, MoneyTransferStaus, MonthNames } from 'src/interfaces';
 import { BaseEntity } from '../base.entity';
 
 @Entity({ name: 'money_transfers' })
@@ -8,7 +9,7 @@ export class MoneyTransfersEntity extends BaseEntity implements MoneyTransfers {
   id: number;
 
   @Column()
-  month: string;
+  month: MonthNames;
 
   @Column()
   requestedAmount: number;

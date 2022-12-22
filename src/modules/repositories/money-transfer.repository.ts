@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
+import Dayjs from 'dayjs';
 
-import { MoneyTransfers } from 'src/interfaces';
+import { MoneyTransfers, MoneyTransferStaus, MonthNames } from 'src/interfaces';
 import { MONEY_TRANFERS_REPOSITORY_NAME } from '../../constants';
 import { MoneyTransfersEntity } from '../../models';
 
@@ -12,19 +13,42 @@ export class MoneyTransferRepository {
     private readonly moneyTransferRepo: Repository<MoneyTransfersEntity>,
   ) {}
 
-  async create(
+  async addMoneyTransfer(
     moneyTransfers: Partial<MoneyTransfers>,
   ): Promise<MoneyTransfers> {
-    return this.moneyTransferRepo.save(moneyTransfers);
+    const dayjs = Dayjs();
+    const month = dayjs.format('MMMM') as MonthNames;
+    const year = dayjs.format('YYYY');
+
+    return this.moneyTransferRepo.save({ ...moneyTransfers, month, year });
   }
 
-  async getById(
+  async updateMoneyTransferStatus(
+    id: number,
+    status: MoneyTransferStaus,
+  ): Promise<UpdateResult> {
+    return this.moneyTransferRepo.update({ id }, { status });
+  }
+
+  async getMoneyTransfersOnCurrentMonth(
     userId: number,
     companyId: number,
   ): Promise<ReadonlyArray<MoneyTransfers>> {
-    return this.moneyTransferRepo.findBy({
-      userId,
-      companyId,
-    });
+    const dayjs = Dayjs();
+    const month = dayjs.format('MMMM') as MonthNames;
+    const year = dayjs.format('YYYY');
+
+    return this.moneyTransferRepo
+      .createQueryBuilder()
+      .where({
+        userId,
+        companyId,
+        month,
+        year,
+      })
+      .where('money_transfers.status IN (:...status)', {
+        status: [MoneyTransferStaus.APPROVE, MoneyTransferStaus.PENDING],
+      })
+      .execute();
   }
 }

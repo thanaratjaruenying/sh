@@ -6,7 +6,6 @@ import {
   Get,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -26,7 +25,9 @@ import {
   DeleteEmployeeDto,
   GetUserDto,
   ImportEmployeeDto,
+  RequestMoneyTransferDto,
   UpdateEmployeeDto,
+  UpdateMoneyTransferDto,
 } from './dto';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UserService } from './user.service';
@@ -87,6 +88,7 @@ export class UserController {
     if (data.mimetype !== 'text/csv') {
       throw new BadRequestException('Invalid file type');
     }
+
     const result = await this.userService.importEmployees(companyId, data.file);
 
     res.status(HttpStatus.OK).send(result);
@@ -126,5 +128,38 @@ export class UserController {
     await this.userService.deleteEmployee(userId, companyId);
 
     res.status(HttpStatus.OK).send();
+  }
+
+  @Roles(SystemRole.USER)
+  @Post('employee/request-money-transfer/')
+  async requestMoneyTransfer(
+    @Body() body: RequestMoneyTransferDto,
+    @Res() res: FastifyReply,
+  ): Promise<any> {
+    const { employeeEmail, companyId, amount } = body;
+
+    const result = await this.userService.requestMoneyTransfer(
+      employeeEmail,
+      companyId,
+      amount,
+    );
+
+    res.status(HttpStatus.OK).send(result);
+  }
+
+  @Roles(SystemRole.USER)
+  @Patch('employee/request-money-transfer/update')
+  async updateMoneyTransferStatus(
+    @Body() body: UpdateMoneyTransferDto,
+    @Res() res: FastifyReply,
+  ): Promise<any> {
+    const { status, moneyTransferId } = body;
+
+    const result = await this.userService.updateMoneyTransfer(
+      moneyTransferId,
+      status,
+    );
+
+    res.status(HttpStatus.OK).send(result);
   }
 }

@@ -46,7 +46,11 @@ export class UserPermissionRepository {
     });
   }
 
-  async getByUserId(
+  async getByUserId(userId: number): Promise<ReadonlyArray<UserPermission>> {
+    return this.userPermissionDb.findBy({ userId, active: true });
+  }
+
+  async getByUserIdCompanyId(
     userId: number,
     companyId: number,
   ): Promise<ReadonlyArray<UserPermission>> {

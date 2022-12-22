@@ -18,26 +18,28 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guard';
-import { SystemRole } from '../../interfaces';
+import { SystemRole, UserToken } from '../../interfaces';
 import { JwtAuthGuard } from '../../common/jwt/jwt-auth.guard';
 import {
   AddAdminDto,
   DeleteEmployeeDto,
   GetUserDto,
-  ImportEmployeeDto,
+  CompanyIdDto,
   RequestMoneyTransferDto,
   UpdateEmployeeDto,
   UpdateMoneyTransferDto,
 } from './dto';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UserService } from './user.service';
+import { UserDecorator } from '../../common/decorators/user.decorator';
+import { checkUserCompanyPermission } from 'src/common/utils/user-role';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Roles(SystemRole.SH, SystemRole.USER)
+  @Roles(SystemRole.SH)
   @Get()
   async getUser(
     @Query() query: GetUserDto,
@@ -74,15 +76,18 @@ export class UserController {
     res.status(HttpStatus.OK).send(result);
   }
 
-  // @ApiConsumes('multipart/form-data', 'text/csv')
-  @Roles(SystemRole.SH, SystemRole.USER)
+  @ApiConsumes('multipart/form-data', 'text/csv')
+  @Roles(SystemRole.USER)
   @Post('employee/import')
   async upload(
-    @Query() query: ImportEmployeeDto,
+    @Query() query: CompanyIdDto,
     @Req() req: FastifyRequest,
     @Res() res: FastifyReply,
+    @UserDecorator() user: UserToken,
   ) {
     const { companyId } = query;
+    checkUserCompanyPermission(user, companyId);
+
     const data = await req.file();
 
     if (data.mimetype !== 'text/csv') {
@@ -94,12 +99,17 @@ export class UserController {
     res.status(HttpStatus.OK).send(result);
   }
 
-  @Roles(SystemRole.SH, SystemRole.USER)
+  @Roles(SystemRole.USER)
   @Get(':email/employee')
   async getEmployee(
+    @Query() query: CompanyIdDto,
     @Param('email') email: string,
     @Res() res: FastifyReply,
+    @UserDecorator() user: UserToken,
   ): Promise<any> {
+    const { companyId } = query;
+    checkUserCompanyPermission(user, companyId);
+
     const result = await this.userService.getUserByEmail(email);
 
     res.status(HttpStatus.OK).send(result);
@@ -108,10 +118,15 @@ export class UserController {
   @Roles(SystemRole.USER)
   @Patch(':email/employee')
   async updateEmployee(
+    @Query() query: CompanyIdDto,
     @Param('email') email: string,
     @Body() body: UpdateEmployeeDto,
     @Res() res: FastifyReply,
+    @UserDecorator() user: UserToken,
   ): Promise<any> {
+    const { companyId } = query;
+    checkUserCompanyPermission(user, companyId);
+
     const result = await this.userService.updateEmployee(email, body);
 
     res.status(HttpStatus.OK).send(result);
@@ -122,8 +137,10 @@ export class UserController {
   async deleteEmployee(
     @Query() query: DeleteEmployeeDto,
     @Res() res: FastifyReply,
+    @UserDecorator() user: UserToken,
   ): Promise<any> {
     const { userId, companyId } = query;
+    checkUserCompanyPermission(user, companyId);
 
     await this.userService.deleteEmployee(userId, companyId);
 
@@ -135,8 +152,10 @@ export class UserController {
   async requestMoneyTransfer(
     @Body() body: RequestMoneyTransferDto,
     @Res() res: FastifyReply,
+    @UserDecorator() user: UserToken,
   ): Promise<any> {
     const { employeeEmail, companyId, amount } = body;
+    checkUserCompanyPermission(user, companyId);
 
     const result = await this.userService.requestMoneyTransfer(
       employeeEmail,
@@ -150,10 +169,14 @@ export class UserController {
   @Roles(SystemRole.USER)
   @Patch('employee/request-money-transfer/update')
   async updateMoneyTransferStatus(
+    @Query() query: CompanyIdDto,
     @Body() body: UpdateMoneyTransferDto,
     @Res() res: FastifyReply,
+    @UserDecorator() user: UserToken,
   ): Promise<any> {
+    const { companyId } = query;
     const { status, moneyTransferId } = body;
+    checkUserCompanyPermission(user, companyId);
 
     const result = await this.userService.updateMoneyTransfer(
       moneyTransferId,

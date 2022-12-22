@@ -7,9 +7,9 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as crypto from 'crypto';
 
-import { SystemRole, User } from '../../interfaces';
+import { SystemRole, UserPermission } from '../../interfaces';
 import { ConfigService } from '../config/config.service';
-import { UserRepository } from '../repositories';
+import { UserPermissionRepository, UserRepository } from '../repositories';
 import {
   SigninInterface,
   SignupInterface,
@@ -22,7 +22,19 @@ export class AuthService {
     private readonly usersRepo: UserRepository,
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly userPermissionRepo: UserPermissionRepository,
   ) {}
+
+  private async getCompanyPermissions(
+    userId: number,
+  ): Promise<ReadonlyArray<Partial<UserPermission>>> {
+    const permissions = await this.userPermissionRepo.getByUserId(userId);
+
+    return permissions.map((permission) => ({
+      role: permission.role,
+      companyId: permission.companyId,
+    }));
+  }
 
   private gethash(): crypto.Hash {
     return crypto.createHash('sha256');
@@ -47,12 +59,18 @@ export class AuthService {
     return this.config.env.SH_EMAILS.includes(email);
   }
 
-  private getJwtToken(email: string, systemRole: SystemRole): string {
+  private async getJwtToken(
+    id: number,
+    email: string,
+    systemRole: SystemRole,
+  ): Promise<string> {
     const exp = Math.floor(Date.now() / 1000) + 86400;
+    const permissions = await this.getCompanyPermissions(id);
     const payload = {
       exp,
+      permissions,
+      systemRole,
       email: email,
-      systemRole: systemRole,
     };
     const jwt = this.jwtService.sign(payload, {
       secret: this.config.env.SECRET_KEY,
@@ -88,7 +106,7 @@ export class AuthService {
       systemRole: this.isShEmail(email) ? SystemRole.SH : SystemRole.USER,
     });
 
-    return this.getJwtToken(user.email, user.systemRole);
+    return this.getJwtToken(user.id, user.email, user.systemRole);
   }
 
   async signin(data: SigninInterface): Promise<string> {
@@ -107,7 +125,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    return this.getJwtToken(user.email, user.systemRole);
+    return this.getJwtToken(user.id, user.email, user.systemRole);
   }
 
   async signupWithLink(data: SignupWithLinkInterface): Promise<string> {
@@ -135,6 +153,6 @@ export class AuthService {
       salt,
     });
 
-    return this.getJwtToken(user.email, user.systemRole);
+    return this.getJwtToken(user.id, user.email, user.systemRole);
   }
 }

@@ -31,10 +31,12 @@ export class userTable1671248256486 implements MigrationInterface {
           {
             name: 'hash',
             type: 'character varying(255)',
+            isNullable: true,
           },
           {
             name: 'salt',
             type: 'character varying(255)',
+            isNullable: true,
           },
           {
             name: 'first_name',

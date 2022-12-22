@@ -43,12 +43,7 @@ export class companyTable1671248237697 implements MigrationInterface {
             isNullable: false,
           },
           {
-            name: 'first_name',
-            type: 'character varying(255)',
-            isNullable: false,
-          },
-          {
-            name: 'last_name',
+            name: 'name',
             type: 'character varying(255)',
             isNullable: false,
           },

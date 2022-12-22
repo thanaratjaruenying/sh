@@ -1,5 +1,6 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
-import { IsInt, IsString } from 'class-validator';
+import { IsEnum, IsInt } from 'class-validator';
 
 import { MoneyTransferStaus } from 'src/interfaces';
 
@@ -8,6 +9,9 @@ export class UpdateMoneyTransferDto {
   @Transform((params: TransformFnParams) => Number(params.value))
   moneyTransferId: number;
 
-  @IsString()
+  @ApiProperty({
+    enum: MoneyTransferStaus,
+  })
+  @IsEnum(MoneyTransferStaus)
   status: MoneyTransferStaus;
 }

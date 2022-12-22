@@ -118,7 +118,7 @@ export class UserController {
   }
 
   @Roles(SystemRole.USER)
-  @Delete(':email/employee')
+  @Delete('/employee')
   async deleteEmployee(
     @Query() query: DeleteEmployeeDto,
     @Res() res: FastifyReply,

@@ -13,6 +13,8 @@ export class AuthController {
   async signup(@Body() signup: SignupDto, @Res() res: FastifyReply<any>) {
     const result = await this.authService.signup(signup);
 
+    res.header('Set-Cookie', `jwt=${result}; HttpOnly; Path=/`);
+
     res.status(HttpStatus.OK).send(result);
   }
 

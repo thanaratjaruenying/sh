@@ -1,7 +1,4 @@
-import { IsEnum, IsString } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-
-import { SystemRole } from 'src/interfaces';
+import { IsString } from 'class-validator';
 
 export class SignupDto {
   @IsString()
@@ -9,13 +6,6 @@ export class SignupDto {
 
   @IsString()
   readonly password: string;
-
-  @ApiProperty({
-    description: 'description of the system role',
-    enum: SystemRole,
-  })
-  @IsEnum(SystemRole)
-  readonly systemRole: SystemRole;
 
   @IsString()
   readonly firstName: string;

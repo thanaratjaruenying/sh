@@ -47,6 +47,20 @@ export class AuthService {
     return this.config.env.SH_EMAILS.includes(email);
   }
 
+  private getJwtToken(email: string, systemRole: SystemRole): string {
+    const exp = Math.floor(Date.now() / 1000) + 86400;
+    const payload = {
+      exp,
+      email: email,
+      systemRole: systemRole,
+    };
+    const jwt = this.jwtService.sign(payload, {
+      secret: this.config.env.SECRET_KEY,
+    });
+
+    return jwt;
+  }
+
   private getHashSalt(password: string): { hash: string; salt: string } {
     // Generate a random salt
     const salt = crypto.randomBytes(32).toString('hex');
@@ -58,17 +72,19 @@ export class AuthService {
     return { salt, hash: hashedPassword };
   }
 
-  async signup(data: SignupInterface): Promise<User> {
+  async signup(data: SignupInterface): Promise<string> {
     const { password, email } = data;
 
     const { hash, salt } = this.getHashSalt(password);
 
-    return this.usersRepo.create({
+    const user = await this.usersRepo.create({
       ...data,
       salt,
       hash,
       systemRole: this.isShEmail(email) ? SystemRole.SH : SystemRole.USER,
     });
+
+    return this.getJwtToken(user.email, user.systemRole);
   }
 
   async signin(data: SigninInterface): Promise<string> {
@@ -87,17 +103,7 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const exp = Math.floor(Date.now() / 1000) + 86400;
-    const payload = {
-      exp,
-      email: user.email,
-      systemRole: user.systemRole,
-    };
-    const jwt = this.jwtService.sign(payload, {
-      secret: this.config.env.SECRET_KEY,
-    });
-
-    return jwt;
+    return this.getJwtToken(user.email, user.systemRole);
   }
 
   async signupWithLink(data: SignupWithLinkInterface): Promise<User> {

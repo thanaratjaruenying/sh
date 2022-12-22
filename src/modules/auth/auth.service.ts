@@ -78,6 +78,9 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException('email not found');
     }
+    if (!user.active) {
+      throw new BadRequestException('user is deactive');
+    }
 
     const result = this.verifyPassword(password, user.hash, user.salt);
     if (!result) {

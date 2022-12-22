@@ -35,6 +35,9 @@ export class AuthController {
   ) {
     const result = await this.authService.signupWithLink(signup);
 
+    // Store the JWT in a cookie
+    res.header('Set-Cookie', `jwt=${result}; HttpOnly; Path=/`);
+
     res.status(HttpStatus.OK).send(result);
   }
 }

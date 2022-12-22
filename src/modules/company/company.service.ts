@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { Company } from 'src/interfaces';
+import { Company } from '../../interfaces';
 import { CompanyRepository } from '../repositories';
 
 @Injectable()

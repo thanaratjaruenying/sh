@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import * as crypto from 'crypto';
 
-import { SystemRole, User } from 'src/interfaces';
+import { SystemRole, User } from '../../interfaces';
 import { ConfigService } from '../config/config.service';
 import { UserRepository } from '../repositories';
 import {
@@ -110,7 +110,7 @@ export class AuthService {
     return this.getJwtToken(user.email, user.systemRole);
   }
 
-  async signupWithLink(data: SignupWithLinkInterface): Promise<User> {
+  async signupWithLink(data: SignupWithLinkInterface): Promise<string> {
     const { password, email, firstName, lastName, phone } = data;
 
     const user = await this.usersRepo.getByEmail(email);
@@ -126,7 +126,7 @@ export class AuthService {
 
     const { hash, salt } = this.getHashSalt(password);
 
-    return this.usersRepo.updateUser({
+    await this.usersRepo.updateUser({
       ...user,
       firstName,
       lastName,
@@ -134,5 +134,7 @@ export class AuthService {
       hash,
       salt,
     });
+
+    return this.getJwtToken(user.email, user.systemRole);
   }
 }

@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany } from 'typeorm';
 
 import { BaseEntity } from '../base.entity';
-import { SystemRole, User } from 'src/interfaces';
+import { SystemRole, User } from '../../interfaces';
 import { UserPermissionEntity } from './user-permission.entity';
 import { AccountEntity } from './account.entity';
 

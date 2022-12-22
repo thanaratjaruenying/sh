@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EntityManager, Repository } from 'typeorm';
 
-import { Account } from 'src/interfaces';
+import { Account } from '../../interfaces';
 import { ACCOUNT_REPOSITORY_NAME } from '../../constants';
-import { AccountEntity } from 'src/models';
+import { AccountEntity } from '../../models';
 
 @Injectable()
 export class AccountRepository {

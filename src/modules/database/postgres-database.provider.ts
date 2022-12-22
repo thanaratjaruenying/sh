@@ -1,14 +1,14 @@
 import { Provider } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+
 import {
   AccountEntity,
   CompanyEntity,
   MoneyTransfersEntity,
   UserEntity,
   UserPermissionEntity,
-} from 'src/models';
-import { DataSource } from 'typeorm';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-
+} from '../../models';
 import { DATABASE, POSTGRES_CONNECTION } from '../../constants';
 import { ConfigService } from '../config/config.service';
 

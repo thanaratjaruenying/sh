@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { Company } from 'src/interfaces';
+import { Company } from '../../interfaces';
 import { COMPANY_REPOSITORY_NAME } from '../../constants';
 import { CompanyEntity } from '../../models';
 

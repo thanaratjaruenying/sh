@@ -18,7 +18,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RolesGuard } from 'src/common/guards/roles.guard';
-import { SystemRole } from 'src/interfaces';
+import { SystemRole } from '../../interfaces';
 import { JwtAuthGuard } from '../../common/jwt/jwt-auth.guard';
 import {
   AddAdminDto,

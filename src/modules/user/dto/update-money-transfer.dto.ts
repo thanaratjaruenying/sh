@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform, TransformFnParams } from 'class-transformer';
 import { IsEnum, IsInt } from 'class-validator';
 
-import { MoneyTransferStaus } from 'src/interfaces';
+import { MoneyTransferStaus } from '../../../interfaces';
 
 export class UpdateMoneyTransferDto {
   @IsInt()

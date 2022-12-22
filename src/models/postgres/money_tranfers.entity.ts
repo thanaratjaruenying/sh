@@ -1,6 +1,10 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-import { MoneyTransfers, MoneyTransferStaus, MonthNames } from 'src/interfaces';
+import {
+  MoneyTransfers,
+  MoneyTransferStaus,
+  MonthNames,
+} from '../../interfaces';
 import { BaseEntity } from '../base.entity';
 
 @Entity({ name: 'money_transfers' })

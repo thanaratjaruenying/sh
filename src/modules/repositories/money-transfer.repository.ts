@@ -2,7 +2,11 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Repository, UpdateResult } from 'typeorm';
 import * as dayjs from 'dayjs';
 
-import { MoneyTransfers, MoneyTransferStaus, MonthNames } from 'src/interfaces';
+import {
+  MoneyTransfers,
+  MoneyTransferStaus,
+  MonthNames,
+} from '../../interfaces';
 import { MONEY_TRANFERS_REPOSITORY_NAME } from '../../constants';
 import { MoneyTransfersEntity } from '../../models';
 

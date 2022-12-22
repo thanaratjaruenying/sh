@@ -7,7 +7,7 @@ import {
   Unique,
 } from 'typeorm';
 
-import { Account } from 'src/interfaces';
+import { Account } from '../../interfaces';
 import { BaseEntityWithoutId } from '../base.entity';
 import { UserEntity } from './user.entity';
 import { CompanyEntity } from './company.entity';

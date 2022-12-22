@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { EntityManager, Repository, UpdateResult } from 'typeorm';
 
-import { Role, UserPermission } from 'src/interfaces';
+import { Role, UserPermission } from '../../interfaces';
 import { USER_PERMISSION_REPOSITORY_NAME } from '../../constants';
 import { UserPermissionEntity } from '../../models';
 

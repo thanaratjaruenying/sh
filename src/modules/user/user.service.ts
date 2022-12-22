@@ -7,7 +7,7 @@ import {
   SystemRole,
   User,
   UserPermission,
-} from 'src/interfaces';
+} from '../../interfaces';
 import { ConfigService } from '../config/config.service';
 import { getDatasource } from '../database/postgres-database.provider';
 import {

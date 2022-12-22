@@ -21,7 +21,7 @@ export class AccountEntity extends BaseEntityWithoutId implements Account {
   @PrimaryColumn({ name: 'company_id' })
   companyId: number;
 
-  @Column()
+  @Column('numeric', { precision: 12, scale: 2 })
   salary: number;
 
   @ManyToOne(() => UserEntity, (user) => user.accounts)

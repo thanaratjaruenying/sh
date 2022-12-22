@@ -11,7 +11,7 @@ export class MoneyTransfersEntity extends BaseEntity implements MoneyTransfers {
   @Column()
   month: MonthNames;
 
-  @Column()
+  @Column('numeric', { precision: 12, scale: 2 })
   requestedAmount: number;
 
   @Column()

@@ -1,5 +1,4 @@
-import { Transform, TransformFnParams } from 'class-transformer';
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateEmployeeDto {
   @IsString()
@@ -13,8 +12,4 @@ export class UpdateEmployeeDto {
   @IsString()
   @IsOptional()
   phone: string;
-
-  @IsInt()
-  @Transform((params: TransformFnParams) => Number(params.value))
-  companyId: number;
 }

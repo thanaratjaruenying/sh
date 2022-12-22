@@ -198,12 +198,10 @@ export class UserService {
       this.accountRepo.getById(user.id, companyId),
     ]);
 
-    const withdraw = transactions.reduce(
-      (prev, curr) => prev + curr.requestedAmount,
-      0,
-    );
-
-    const fiftyPercent = account.salary * 0.5;
+    const withdraw = transactions.reduce((prev, curr) => {
+      return prev + parseFloat(curr.requestedAmount as any as string);
+    }, 0);
+    const fiftyPercent = parseFloat(account.salary as any as string) * 0.5;
     const requestAmount = withdraw + amount;
     if (requestAmount > fiftyPercent) {
       throw new BadRequestException('cannot withdraw more than 50% of salary');

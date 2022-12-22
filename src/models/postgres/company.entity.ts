@@ -26,10 +26,7 @@ export class CompanyEntity extends BaseEntity implements Company {
   email: string;
 
   @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
+  name: string;
 
   @Column()
   phone: string;

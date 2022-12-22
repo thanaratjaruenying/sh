@@ -63,10 +63,10 @@ export class UserController {
     res.status(HttpStatus.OK).send(result);
   }
 
-  @Roles(SystemRole.USER)
+  @Roles(SystemRole.USER, SystemRole.SH)
   @Post('employee')
   async createEmployee(
-    @Query() body: CreateEmployeeDto,
+    @Body() body: CreateEmployeeDto,
     @Res() res: FastifyReply,
   ): Promise<any> {
     const result = await this.userService.createEmployee(body);
@@ -97,7 +97,7 @@ export class UserController {
   @Roles(SystemRole.SH, SystemRole.USER)
   @Get(':email/employee')
   async getEmployee(
-    @Param() email: string,
+    @Param('email') email: string,
     @Res() res: FastifyReply,
   ): Promise<any> {
     const result = await this.userService.getUserByEmail(email);
@@ -108,7 +108,7 @@ export class UserController {
   @Roles(SystemRole.USER)
   @Patch(':email/employee')
   async updateEmployee(
-    @Param() email: string,
+    @Param('email') email: string,
     @Body() body: UpdateEmployeeDto,
     @Res() res: FastifyReply,
   ): Promise<any> {
@@ -118,7 +118,7 @@ export class UserController {
   }
 
   @Roles(SystemRole.USER)
-  @Delete('/employee')
+  @Delete('employee')
   async deleteEmployee(
     @Query() query: DeleteEmployeeDto,
     @Res() res: FastifyReply,
@@ -131,7 +131,7 @@ export class UserController {
   }
 
   @Roles(SystemRole.USER)
-  @Post('employee/request-money-transfer/')
+  @Post('employee/request-money-transfer')
   async requestMoneyTransfer(
     @Body() body: RequestMoneyTransferDto,
     @Res() res: FastifyReply,

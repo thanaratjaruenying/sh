@@ -15,10 +15,7 @@ export class CreateCompanyDto {
   readonly district: string;
 
   @IsString()
-  readonly firstName: string;
-
-  @IsString()
-  readonly lastName: string;
+  readonly name: string;
 
   @IsString()
   readonly phone: string;

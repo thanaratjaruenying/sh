@@ -19,11 +19,7 @@ export class UpdateCompanyDto {
 
   @IsString()
   @IsOptional()
-  readonly firstName?: string;
-
-  @IsString()
-  @IsOptional()
-  readonly lastName?: string;
+  readonly name?: string;
 
   @IsString()
   @IsOptional()

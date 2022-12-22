@@ -6,8 +6,7 @@ export interface Company extends Base {
   address2?: string;
   district: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   phone: string;
   postcode: string;
   province: string;

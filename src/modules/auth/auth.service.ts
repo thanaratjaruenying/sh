@@ -25,15 +25,13 @@ export class AuthService {
     private readonly userPermissionRepo: UserPermissionRepository,
   ) {}
 
-  private async getCompanyPermissions(
-    userId: number,
-  ): Promise<ReadonlyArray<Partial<UserPermission>>> {
+  private async getCompanyPermissions(userId: number): Promise<object> {
     const permissions = await this.userPermissionRepo.getByUserId(userId);
 
-    return permissions.map((permission) => ({
-      role: permission.role,
-      companyId: permission.companyId,
-    }));
+    return permissions.reduce((prev, curr: UserPermission) => {
+      prev[curr.companyId] = curr.role;
+      return prev;
+    }, {});
   }
 
   private gethash(): crypto.Hash {

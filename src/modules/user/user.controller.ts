@@ -33,7 +33,6 @@ import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UserService } from './user.service';
 import { UserDecorator } from '../../common/decorators/user.decorator';
 import { checkUserCompanyPermission } from 'src/common/utils/user-role';
-import { ImportDto } from './dto/import.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('user')

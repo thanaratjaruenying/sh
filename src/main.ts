@@ -12,7 +12,7 @@ import Multipart from '@fastify/multipart';
 import { AppModule } from './app.module';
 
 const swaggerDocument = new DocumentBuilder()
-  .setTitle('API')
+  .setTitle('SH')
   .setDescription('API')
   .setVersion('1.0')
   .addTag('API')

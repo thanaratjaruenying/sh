@@ -21,15 +21,7 @@ const swaggerDocument = new DocumentBuilder()
 async function bootstrap() {
   const adapter = new FastifyAdapter({ logger: true });
   adapter.register(fastifyCookie);
-
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    adapter,
-    { cors: true },
-  );
-
-  // Register the @fastify/multipart plugin
-  app.register(Multipart, {
+  adapter.register(Multipart, {
     sharedSchemaId: 'MultipartFile',
     throwFileSizeLimit: true,
     limits: {
@@ -37,6 +29,13 @@ async function bootstrap() {
       fileSize: 10000,
     },
   });
+
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    adapter,
+    { cors: true },
+  );
+
   app.register(helmet, {
     contentSecurityPolicy: {
       directives: {

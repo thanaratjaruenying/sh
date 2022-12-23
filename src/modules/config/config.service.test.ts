@@ -27,7 +27,7 @@ describe('ConfigService', () => {
   }
 
   describe('new ConfigService()', () => {
-    it('should fail the validation if environments are not there', async () => {
+    test('should fail the validation if environments are not there', async () => {
       try {
         await createTestModule(false);
       } catch (errors) {
@@ -36,7 +36,7 @@ describe('ConfigService', () => {
       }
     });
 
-    it('should validate environment variables with skip missing variable options', async () => {
+    test('should validate environment variables with skip missing variable options', async () => {
       process.env.PORT = '3000';
       process.env.REDIS_PORT = '6379';
       const expectedPort = 3000;
@@ -47,7 +47,7 @@ describe('ConfigService', () => {
       expect(typeof actualPort).toBe('number');
     });
 
-    it('should get environment from process.env', async () => {
+    test('should get environment from process.env', async () => {
       try {
         process.env.PORT = '3000';
 

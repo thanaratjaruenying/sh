@@ -1,5 +1,4 @@
 import { Base } from './base.interface';
-import { Role } from './user-permission.interface';
 
 export enum SystemRole {
   SH = 'SH',
@@ -20,5 +19,5 @@ export interface User extends Base {
 export interface UserToken {
   email: string;
   roles: ReadonlyArray<string>;
-  permissions: ReadonlyArray<{ role: Role; companyId: number }>;
+  permissions: Record<string, string>;
 }

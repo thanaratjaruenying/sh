@@ -25,7 +25,7 @@ describe('AuthController', () => {
   });
 
   describe('signup', () => {
-    it('should return a JWT token and set a cookie', async () => {
+    test('should return a JWT token and set a cookie', async () => {
       const signupDto: SignupDto = {
         email: 'test@example.com',
         password: 'testpassword',
@@ -66,7 +66,7 @@ describe('AuthController', () => {
   });
 
   describe('signin', () => {
-    it('should return a JWT token and set a cookie', async () => {
+    test('should return a JWT token and set a cookie', async () => {
       const signinDto: SigninDto = {
         email: 'test@example.com',
         password: 'testpassword',
@@ -103,7 +103,7 @@ describe('AuthController', () => {
   });
 
   describe('signupWithLink', () => {
-    it('should return the updated user', async () => {
+    test('should return the updated user', async () => {
       const signupWithLinkDto: SignupWithLinkDto = {
         email: 'test@example.com',
         password: 'testpassword',

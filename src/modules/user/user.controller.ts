@@ -13,7 +13,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiConsumes } from '@nestjs/swagger';
+import { ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 import { Roles } from 'src/common/decorators/roles.decorator';
@@ -33,6 +33,7 @@ import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { UserService } from './user.service';
 import { UserDecorator } from '../../common/decorators/user.decorator';
 import { checkUserCompanyPermission } from 'src/common/utils/user-role';
+import { ImportDto } from './dto/import.dto';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('user')
@@ -76,7 +77,8 @@ export class UserController {
     res.status(HttpStatus.OK).send(result);
   }
 
-  @ApiConsumes('multipart/form-data', 'text/csv')
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Import employees from a CSV file' })
   @Roles(SystemRole.USER)
   @Post('employee/import')
   async upload(

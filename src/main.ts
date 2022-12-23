@@ -30,7 +30,6 @@ async function bootstrap() {
 
   // Register the @fastify/multipart plugin
   app.register(Multipart, {
-    // addToBody: true,
     sharedSchemaId: 'MultipartFile',
     throwFileSizeLimit: true,
     limits: {

@@ -153,10 +153,8 @@ export class UserController {
   async requestMoneyTransfer(
     @Body() body: RequestMoneyTransferDto,
     @Res() res: FastifyReply,
-    @UserDecorator() user: UserToken,
   ): Promise<any> {
     const { employeeEmail, companyId, amount } = body;
-    checkUserCompanyPermission(user, companyId);
 
     const result = await this.userService.requestMoneyTransfer(
       employeeEmail,

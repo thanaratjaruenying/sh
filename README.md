@@ -58,16 +58,6 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
 ## License
 
 Nest is [MIT licensed](LICENSE).
@@ -78,7 +68,20 @@ Nest is [MIT licensed](LICENSE).
 ```bash
   docker build -t my-app .
 ```
+### Start database server
+#### before start the app server
+```bash
+  docker compose up -d
+```
 ### Run
+#### start the app server on docker instead of local
 ```bash
   docker run -p 3000:3000 --env-file .env my-app
 ```
+
+### Overview
+
+A user can sign up by them self only Salary hero will get SH role, the other will get USER role.
+Only SH role can assign admins to a company.
+SH and USER role can create an employee then assign to a company but the employess cannot sign in yet until they sign up with the link from a email (not implemented).
+An employee can request money by themself but only admins can approve it.
